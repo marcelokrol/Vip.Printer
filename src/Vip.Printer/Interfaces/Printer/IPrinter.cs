@@ -6,7 +6,7 @@ namespace Vip.Printer.Interfaces.Printer
 {
     internal interface IPrinter
     {
-        int ColsNomal { get; }
+        int ColsNormal { get; }
         int ColsCondensed { get; }
         int ColsExpanded { get; }
         void PrintDocument();

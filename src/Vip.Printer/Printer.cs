@@ -90,7 +90,7 @@ namespace Vip.Printer
 
             #region Configure number columns
 
-            ColsNomal = colsNormal == 0 ? _command.ColsNomal : colsNormal;
+            ColsNormal = colsNormal == 0 ? _command.ColsNomal : colsNormal;
             ColsCondensed = colsCondensed == 0 ? _command.ColsCondensed : colsCondensed;
             ColsExpanded = colsExpanded == 0 ? _command.ColsExpanded : colsExpanded;
 
@@ -126,7 +126,7 @@ namespace Vip.Printer
 
         #region Methods
 
-        public int ColsNomal { get; private set; }
+        public int ColsNormal { get; private set; }
 
         public int ColsCondensed { get; private set; }
 
