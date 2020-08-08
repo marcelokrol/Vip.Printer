@@ -90,7 +90,7 @@ namespace Vip.Printer
 
             #region Configure number columns
 
-            ColsNormal = colsNormal == 0 ? _command.ColsNomal : colsNormal;
+            ColsNormal = colsNormal == 0 ? _command.ColsNormal : colsNormal;
             ColsCondensed = colsCondensed == 0 ? _command.ColsCondensed : colsCondensed;
             ColsExpanded = colsExpanded == 0 ? _command.ColsExpanded : colsExpanded;
 
@@ -168,6 +168,25 @@ namespace Vip.Printer
                 return;
 
             if (useLf) value += "\n";
+
+            if (value.IndexOf('»') >= 0)
+            {
+               char padchar;
+               int p = value.IndexOf('»');
+               string a, b;
+               a = value.Substring(0, p);
+               b = value.Substring(p + 1);
+               if (a.StartsWith("--"))
+                  padchar = '-';
+               else
+                  padchar = ' ';
+               
+               int l = _command.ColsNormal - (b.Length + 1);
+               if (l >= a.Length)
+                  value = a.PadRight(l, padchar) + " " + b;
+               else
+                  value = a.Substring(0, l) + " " + b;
+            }
 
             var list = new List<byte>();
             if (_buffer != null) list.AddRange(_buffer);
