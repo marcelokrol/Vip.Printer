@@ -2,9 +2,9 @@
 using Vip.Printer.Extensions;
 using Vip.Printer.Interfaces.Command;
 
-namespace Vip.Printer.EscPosCommands
+namespace Vip.Printer.EscElginCommands
 {
-    internal class EscPos : IPrintCommand
+    internal class EscElgin : IPrintCommand
     {
         #region Properties
 
@@ -25,7 +25,7 @@ namespace Vip.Printer.EscPosCommands
 
         #region Constructor
 
-        public EscPos()
+        public EscElgin()
         {
             FontMode = new FontMode();
             FontWidth = new FontWidth();

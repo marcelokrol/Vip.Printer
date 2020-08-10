@@ -34,6 +34,7 @@ using System.Text;
 using Vip.Printer.Enums;
 using Vip.Printer.EscBemaCommands;
 using Vip.Printer.EscDarumaCommands;
+using Vip.Printer.EscElginCommands;
 using Vip.Printer.EscPosCommands;
 using Vip.Printer.Helper;
 using Vip.Printer.Interfaces.Command;
@@ -42,453 +43,456 @@ using Image = System.Drawing.Image;
 
 namespace Vip.Printer
 {
-    public class Printer : IPrinter
-    {
-        #region Properties
+   public class Printer : IPrinter
+   {
+      #region Properties
 
-        private byte[] _buffer;
-        private readonly string _printerName;
-        private readonly IPrintCommand _command;
-        private readonly PrinterType _printerType;
-        private readonly Encoding _encoding;
+      private byte[] _buffer;
+      private readonly string _printerName;
+      private readonly IPrintCommand _command;
+      private readonly PrinterType _printerType;
+      private readonly Encoding _encoding;
 
-        #endregion
+      #endregion
 
-        #region Constructors
+      #region Constructors
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Printer" /> class.
-        /// </summary>
-        /// <param name="printerName">Printer name, shared name or port of printer install</param>
-        /// <param name="type">Command set of type printer</param>
-        /// <param name="colsNormal">Number of columns for normal mode print</param>
-        /// <param name="colsCondensed">Number of columns for condensed mode print</param>
-        /// <param name="colsExpanded">Number of columns for expanded mode print</param>
-        /// <param name="encoding">Custom encoding</param>
-        public Printer(string printerName, PrinterType type, int colsNormal, int colsCondensed, int colsExpanded, Encoding encoding)
-        {
-            _printerName = string.IsNullOrEmpty(printerName) ? "temp.prn" : printerName.Trim();
-            _printerType = type;
-            _encoding = encoding;
+      /// <summary>
+      ///     Initializes a new instance of the <see cref="Printer" /> class.
+      /// </summary>
+      /// <param name="printerName">Printer name, shared name or port of printer install</param>
+      /// <param name="type">Command set of type printer</param>
+      /// <param name="colsNormal">Number of columns for normal mode print</param>
+      /// <param name="colsCondensed">Number of columns for condensed mode print</param>
+      /// <param name="colsExpanded">Number of columns for expanded mode print</param>
+      /// <param name="encoding">Custom encoding</param>
+      public Printer(string printerName, PrinterType type, int colsNormal, int colsCondensed, int colsExpanded, Encoding encoding)
+      {
+         _printerName = string.IsNullOrEmpty(printerName) ? "temp.prn" : printerName.Trim();
+         _printerType = type;
+         _encoding = encoding;
 
-            #region Select printer type
+         #region Select printer type
 
-            switch (type)
-            {
-                case PrinterType.Epson:
-                    _command = new EscPos();
-                    break;
-                case PrinterType.Bematech:
-                    _command = new EscBema();
-                    break;
-                case PrinterType.Daruma:
-                    _command = new EscDaruma();
-                    break;
-            }
+         switch (type)
+         {
+            case PrinterType.Epson:
+               _command = new EscPos();
+               break;
+            case PrinterType.Bematech:
+               _command = new EscBema();
+               break;
+            case PrinterType.Daruma:
+               _command = new EscDaruma();
+               break;
+            case PrinterType.Elgin:
+               _command = new EscElgin();
+               break;
+         }
 
-            #endregion
+         #endregion
 
-            #region Configure number columns
+         #region Configure number columns
 
-            ColsNormal = colsNormal == 0 ? _command.ColsNormal : colsNormal;
-            ColsCondensed = colsCondensed == 0 ? _command.ColsCondensed : colsCondensed;
-            ColsExpanded = colsExpanded == 0 ? _command.ColsExpanded : colsExpanded;
+         ColsNormal = colsNormal == 0 ? _command.ColsNormal : colsNormal;
+         ColsCondensed = colsCondensed == 0 ? _command.ColsCondensed : colsCondensed;
+         ColsExpanded = colsExpanded == 0 ? _command.ColsExpanded : colsExpanded;
 
-            #endregion
-        }
+         #endregion
+      }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Printer" /> class.
-        /// </summary>
-        /// <param name="printerName">Printer name, shared name or port of printer install</param>
-        /// <param name="type">Command set of type printer</param>
-        /// <param name="colsNormal">Number of columns for normal mode print</param>
-        /// <param name="colsCondensed">Number of columns for condensed mode print</param>
-        /// <param name="colsExpanded">Number of columns for expanded mode print</param>
-        public Printer(string printerName, PrinterType type, int colsNormal, int colsCondensed, int colsExpanded) : this(printerName, type, colsNormal, colsCondensed, colsExpanded, null) { }
+      /// <summary>
+      ///     Initializes a new instance of the <see cref="Printer" /> class.
+      /// </summary>
+      /// <param name="printerName">Printer name, shared name or port of printer install</param>
+      /// <param name="type">Command set of type printer</param>
+      /// <param name="colsNormal">Number of columns for normal mode print</param>
+      /// <param name="colsCondensed">Number of columns for condensed mode print</param>
+      /// <param name="colsExpanded">Number of columns for expanded mode print</param>
+      public Printer(string printerName, PrinterType type, int colsNormal, int colsCondensed, int colsExpanded) : this(printerName, type, colsNormal, colsCondensed, colsExpanded, null) { }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Printer" /> class.
-        /// </summary>
-        /// <param name="printerName">Printer name, shared name or port of printer install</param>
-        /// <param name="type">Command set of type printer</param>
-        /// <param name="encoding">Custom encoding</param>
-        public Printer(string printerName, PrinterType type, Encoding encoding) : this(printerName, type, 0, 0, 0, encoding) { }
+      /// <summary>
+      ///     Initializes a new instance of the <see cref="Printer" /> class.
+      /// </summary>
+      /// <param name="printerName">Printer name, shared name or port of printer install</param>
+      /// <param name="type">Command set of type printer</param>
+      /// <param name="encoding">Custom encoding</param>
+      public Printer(string printerName, PrinterType type, Encoding encoding) : this(printerName, type, 0, 0, 0, encoding) { }
 
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Printer" /> class.
-        /// </summary>
-        /// <param name="printerName">Printer name, shared name or port of printer install</param>
-        /// <param name="type">>Command set of type printer</param>
-        public Printer(string printerName, PrinterType type) : this(printerName, type, 0, 0, 0, null) { }
+      /// <summary>
+      ///     Initializes a new instance of the <see cref="Printer" /> class.
+      /// </summary>
+      /// <param name="printerName">Printer name, shared name or port of printer install</param>
+      /// <param name="type">>Command set of type printer</param>
+      public Printer(string printerName, PrinterType type) : this(printerName, type, 0, 0, 0, null) { }
 
-        #endregion
+      #endregion
 
-        #region Methods
+      #region Methods
 
-        public int ColsNormal { get; private set; }
+      public int ColsNormal { get; private set; }
 
-        public int ColsCondensed { get; private set; }
+      public int ColsCondensed { get; private set; }
 
-        public int ColsExpanded { get; private set; }
+      public int ColsExpanded { get; private set; }
 
-        public void PrintDocument()
-        {
-            if (_buffer == null)
-                return;
+      public void PrintDocument()
+      {
+         if (_buffer == null)
+            return;
 
-            if (!RawPrinterHelper.SendBytesToPrinter(_printerName, _buffer))
-                throw new ArgumentException("Não foi possível acessar a impressora: " + _printerName);
-        }
+         if (!RawPrinterHelper.SendBytesToPrinter(_printerName, _buffer))
+            throw new ArgumentException("Não foi possível acessar a impressora: " + _printerName);
+      }
 
-        public void Write(string value)
-        {
-            WriteString(value, false);
-        }
+      public void Write(string value)
+      {
+         WriteString(value, false);
+      }
 
-        public void Write(byte[] value)
-        {
-            if (value == null)
-                return;
+      public void Write(byte[] value)
+      {
+         if (value == null)
+            return;
 
-            var list = new List<byte>();
-            if (_buffer != null) list.AddRange(_buffer);
-            list.AddRange(value);
-            _buffer = list.ToArray();
-        }
+         var list = new List<byte>();
+         if (_buffer != null) list.AddRange(_buffer);
+         list.AddRange(value);
+         _buffer = list.ToArray();
+      }
 
-        public void WriteLine(string value)
-        {
-            WriteString(value, true);
-        }
+      public void WriteLine(string value)
+      {
+         WriteString(value, true);
+      }
 
-        private void WriteString(string value, bool useLf)
-        {
-            if (string.IsNullOrEmpty(value))
-                return;
+      private void WriteString(string value, bool useLf)
+      {
+         if (string.IsNullOrEmpty(value))
+            return;
 
-            if (useLf) value += "\n";
+         if (useLf) value += "\n";
 
-            if (value.IndexOf('»') >= 0)
-            {
-               char padchar;
-               int p = value.IndexOf('»');
-               string a, b;
-               a = value.Substring(0, p);
-               b = value.Substring(p + 1);
-               if (a.StartsWith("--"))
-                  padchar = '-';
-               else
-                  padchar = ' ';
-               
-               int l = _command.ColsNormal - (b.Length + 1);
-               if (l >= a.Length)
-                  value = a.PadRight(l, padchar) + " " + b;
-               else
-                  value = a.Substring(0, l) + " " + b;
-            }
+         if (value.IndexOf('»') >= 0)
+         {
+            char padchar;
+            int p = value.IndexOf('»');
+            string a, b;
+            a = value.Substring(0, p);
+            b = value.Substring(p + 1);
+            if (a.StartsWith("--"))
+               padchar = '-';
+            else
+               padchar = ' ';
 
-            var list = new List<byte>();
-            if (_buffer != null) list.AddRange(_buffer);
+            int l = _command.ColsNormal - (b.Length + 1);
+            if (l >= a.Length)
+               value = a.PadRight(l, padchar) + " " + b;
+            else
+               value = a.Substring(0, l) + " " + b;
+         }
 
-            var bytes = _encoding != null
-                ? _encoding.GetBytes(value)
-                : _printerType == PrinterType.Bematech
-                    ? Encoding.GetEncoding(850).GetBytes(value)
-                    : Encoding.GetEncoding("IBM860").GetBytes(value);
+         var list = new List<byte>();
+         if (_buffer != null) list.AddRange(_buffer);
 
-            list.AddRange(bytes);
-            _buffer = list.ToArray();
-        }
+         var bytes = _encoding != null
+             ? _encoding.GetBytes(value)
+             : _printerType == PrinterType.Bematech
+                 ? Encoding.GetEncoding(850).GetBytes(value)
+                 : Encoding.GetEncoding("IBM860").GetBytes(value);
 
-        public void NewLine()
-        {
-            WriteLine("\n");
-        }
+         list.AddRange(bytes);
+         _buffer = list.ToArray();
+      }
 
-        public void NewLines(int lines)
-        {
-            for (var i = 1; i < lines; i++)
-                NewLine();
-        }
+      public void NewLine()
+      {
+         WriteLine("\n");
+      }
 
-        public void Clear()
-        {
-            _buffer = null;
-        }
-
-        #region Obsolete Methods
-
-        [Obsolete("This method changed to WriteLine")]
-        public void Append(string value)
-        {
-            WriteLine(value);
-        }
-
-        [Obsolete("This method changed to Write")]
-        public void AppendWithoutLf(string value)
-        {
-            Write(value);
-        }
-
-        [Obsolete("This method changed to Write")]
-        public void Append(byte[] value)
-        {
-            Write(value);
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Commands
-
-        public void Separator()
-        {
-            Write(_command.Separator());
-        }
-
-        public void AutoTest()
-        {
-            Write(_command.AutoTest());
-        }
-
-        public void TestPrinter()
-        {
-            AlignLeft();
-            WriteLine("TESTE DE IMPRESSÃO NORMAL - 48 COLUNAS");
-            WriteLine("....+....1....+....2....+....3....+....4....+...");
-            Separator();
-            WriteLine("Texto Normal");
-            ItalicMode("Texto Itálico");
-            BoldMode("Texto Negrito");
-            UnderlineMode("Texto Sublinhado");
-            ExpandedMode(PrinterModeState.On);
-            WriteLine("Texto Expandido");
-            WriteLine("....+....1....+....2....");
-            ExpandedMode(PrinterModeState.Off);
-            CondensedMode(PrinterModeState.On);
-            WriteLine("Texto condensado");
-            CondensedMode(PrinterModeState.Off);
-            Separator();
-
-            DoubleWidth2();
-            WriteLine("Largura Fonte 2");
-            DoubleWidth3();
-            WriteLine("Largura Fonte 3");
-            NormalWidth();
-            WriteLine("Largura normal");
-            Separator();
-
-            AlignRight();
-            WriteLine("Texto alinhado à direita");
-            AlignCenter();
-            WriteLine("Texto alinhado ao centro");
-            AlignLeft();
-            WriteLine("Texto alinhado à esquerda");
-            NewLines(3);
-            WriteLine("Final de Teste :)");
-            Separator();
+      public void NewLines(int lines)
+      {
+         for (var i = 1; i < lines; i++)
             NewLine();
-        }
+      }
 
-        #region FontMode
+      public void Clear()
+      {
+         _buffer = null;
+      }
 
-        public void ItalicMode(string value)
-        {
-            Write(_command.FontMode.Italic(value));
-        }
+      #region Obsolete Methods
 
-        public void ItalicMode(PrinterModeState state)
-        {
-            Write(_command.FontMode.Italic(state));
-        }
+      [Obsolete("This method changed to WriteLine")]
+      public void Append(string value)
+      {
+         WriteLine(value);
+      }
 
-        public void BoldMode(string value)
-        {
-            Write(_command.FontMode.Bold(value));
-        }
+      [Obsolete("This method changed to Write")]
+      public void AppendWithoutLf(string value)
+      {
+         Write(value);
+      }
 
-        public void BoldMode(PrinterModeState state)
-        {
-            Write(_command.FontMode.Bold(state));
-        }
+      [Obsolete("This method changed to Write")]
+      public void Append(byte[] value)
+      {
+         Write(value);
+      }
 
-        public void UnderlineMode(string value)
-        {
-            Write(_command.FontMode.Underline(value));
-        }
+      #endregion
 
-        public void UnderlineMode(PrinterModeState state)
-        {
-            Write(_command.FontMode.Underline(state));
-        }
+      #endregion
 
-        public void ExpandedMode(string value)
-        {
-            Write(_command.FontMode.Expanded(value));
-        }
+      #region Commands
 
-        public void ExpandedMode(PrinterModeState state)
-        {
-            Write(_command.FontMode.Expanded(state));
-        }
+      public void Separator()
+      {
+         Write(_command.Separator());
+      }
 
-        public void CondensedMode(string value)
-        {
-            Write(_command.FontMode.Condensed(value));
-        }
+      public void AutoTest()
+      {
+         Write(_command.AutoTest());
+      }
 
-        public void CondensedMode(PrinterModeState state)
-        {
-            Write(_command.FontMode.Condensed(state));
-        }
+      public void TestPrinter()
+      {
+         AlignLeft();
+         WriteLine("TESTE DE IMPRESSÃO NORMAL - 48 COLUNAS");
+         WriteLine("....+....1....+....2....+....3....+....4....+...");
+         Separator();
+         WriteLine("Texto Normal");
+         ItalicMode("Texto Itálico");
+         BoldMode("Texto Negrito");
+         UnderlineMode("Texto Sublinhado");
+         ExpandedMode(PrinterModeState.On);
+         WriteLine("Texto Expandido");
+         WriteLine("....+....1....+....2....");
+         ExpandedMode(PrinterModeState.Off);
+         CondensedMode(PrinterModeState.On);
+         WriteLine("Texto condensado");
+         CondensedMode(PrinterModeState.Off);
+         Separator();
 
-        #endregion
+         DoubleWidth2();
+         WriteLine("Largura Fonte 2");
+         DoubleWidth3();
+         WriteLine("Largura Fonte 3");
+         NormalWidth();
+         WriteLine("Largura normal");
+         Separator();
 
-        #region FontWidth
+         AlignRight();
+         WriteLine("Texto alinhado à direita");
+         AlignCenter();
+         WriteLine("Texto alinhado ao centro");
+         AlignLeft();
+         WriteLine("Texto alinhado à esquerda");
+         NewLines(3);
+         WriteLine("Final de Teste :)");
+         Separator();
+         NewLine();
+      }
 
-        public void NormalWidth()
-        {
-            Write(_command.FontWidth.Normal());
-        }
+      #region FontMode
 
-        public void DoubleWidth2()
-        {
-            Write(_command.FontWidth.DoubleWidth2());
-        }
+      public void ItalicMode(string value)
+      {
+         Write(_command.FontMode.Italic(value));
+      }
 
-        public void DoubleWidth3()
-        {
-            Write(_command.FontWidth.DoubleWidth3());
-        }
+      public void ItalicMode(PrinterModeState state)
+      {
+         Write(_command.FontMode.Italic(state));
+      }
 
-        #endregion
+      public void BoldMode(string value)
+      {
+         Write(_command.FontMode.Bold(value));
+      }
 
-        #region Alignment
+      public void BoldMode(PrinterModeState state)
+      {
+         Write(_command.FontMode.Bold(state));
+      }
 
-        public void AlignLeft()
-        {
-            Write(_command.Alignment.Left());
-        }
+      public void UnderlineMode(string value)
+      {
+         Write(_command.FontMode.Underline(value));
+      }
 
-        public void AlignRight()
-        {
-            Write(_command.Alignment.Right());
-        }
+      public void UnderlineMode(PrinterModeState state)
+      {
+         Write(_command.FontMode.Underline(state));
+      }
 
-        public void AlignCenter()
-        {
-            Write(_command.Alignment.Center());
-        }
+      public void ExpandedMode(string value)
+      {
+         Write(_command.FontMode.Expanded(value));
+      }
 
-        #endregion
+      public void ExpandedMode(PrinterModeState state)
+      {
+         Write(_command.FontMode.Expanded(state));
+      }
 
-        #region PaperCut
+      public void CondensedMode(string value)
+      {
+         Write(_command.FontMode.Condensed(value));
+      }
 
-        public void FullPaperCut()
-        {
-            Write(_command.PaperCut.Full());
-        }
+      public void CondensedMode(PrinterModeState state)
+      {
+         Write(_command.FontMode.Condensed(state));
+      }
 
-        public void FullPaperCut(bool predicate)
-        {
-            if (predicate)
-                FullPaperCut();
-        }
+      #endregion
 
-        public void PartialPaperCut()
-        {
-            Write(_command.PaperCut.Partial());
-        }
+      #region FontWidth
 
-        public void PartialPaperCut(bool predicate)
-        {
-            if (predicate)
-                PartialPaperCut();
-        }
+      public void NormalWidth()
+      {
+         Write(_command.FontWidth.Normal());
+      }
 
-        #endregion
+      public void DoubleWidth2()
+      {
+         Write(_command.FontWidth.DoubleWidth2());
+      }
 
-        #region Drawer
+      public void DoubleWidth3()
+      {
+         Write(_command.FontWidth.DoubleWidth3());
+      }
 
-        public void OpenDrawer()
-        {
-            Write(_command.Drawer.Open());
-        }
+      #endregion
 
-        #endregion
+      #region Alignment
 
-        #region QrCode
+      public void AlignLeft()
+      {
+         Write(_command.Alignment.Left());
+      }
 
-        public void QrCode(string qrData)
-        {
-            Write(_command.QrCode.Print(qrData));
-        }
+      public void AlignRight()
+      {
+         Write(_command.Alignment.Right());
+      }
 
-        public void QrCode(string qrData, QrCodeSize qrCodeSize)
-        {
-            Write(_command.QrCode.Print(qrData, qrCodeSize));
-        }
+      public void AlignCenter()
+      {
+         Write(_command.Alignment.Center());
+      }
 
-        #endregion
+      #endregion
 
-        #region Image
+      #region PaperCut
 
-        public void Image(string path, bool highDensity = true)
-        {
-            if (!File.Exists(path))
-                throw new Exception("Image file not found");
+      public void FullPaperCut()
+      {
+         Write(_command.PaperCut.Full());
+      }
 
-            using (var image = System.Drawing.Image.FromFile(path)) Write(_command.Image.Print(image, highDensity));
-        }
+      public void FullPaperCut(bool predicate)
+      {
+         if (predicate)
+            FullPaperCut();
+      }
 
-        public void Image(Stream stream, bool highDensity = true)
-        {
-            using (var image = System.Drawing.Image.FromStream(stream)) Write(_command.Image.Print(image, highDensity));
-        }
+      public void PartialPaperCut()
+      {
+         Write(_command.PaperCut.Partial());
+      }
 
-        public void Image(byte[] bytes, bool highDensity = true)
-        {
-            using (var ms = new MemoryStream(bytes))
-                Write(_command.Image.Print(System.Drawing.Image.FromStream(ms), highDensity));
-        }
+      public void PartialPaperCut(bool predicate)
+      {
+         if (predicate)
+            PartialPaperCut();
+      }
 
-        public void Image(Image image, bool highDensity = true)
-        {
-            Write(_command.Image.Print(image, highDensity));
-        }
+      #endregion
 
-        #endregion
+      #region Drawer
 
-        #region BarCode
+      public void OpenDrawer()
+      {
+         Write(_command.Drawer.Open());
+      }
 
-        public void Code128(string code)
-        {
-            Write(_command.BarCode.Code128(code));
-        }
+      #endregion
 
-        public void Code39(string code)
-        {
-            Write(_command.BarCode.Code39(code));
-        }
+      #region QrCode
 
-        public void Ean13(string code)
-        {
-            Write(_command.BarCode.Ean13(code));
-        }
+      public void QrCode(string qrData)
+      {
+         Write(_command.QrCode.Print(qrData));
+      }
 
-        #endregion
+      public void QrCode(string qrData, QrCodeSize qrCodeSize)
+      {
+         Write(_command.QrCode.Print(qrData, qrCodeSize));
+      }
 
-        #region InitializePrint
+      #endregion
 
-        public void InitializePrint()
-        {
-            RawPrinterHelper.SendBytesToPrinter(_printerName, _command.InitializePrint.Initialize());
-        }
+      #region Image
 
-        #endregion
+      public void Image(string path, bool highDensity = true)
+      {
+         if (!File.Exists(path))
+            throw new Exception("Image file not found");
 
-        #endregion
-    }
+         using (var image = System.Drawing.Image.FromFile(path)) Write(_command.Image.Print(image, highDensity));
+      }
+
+      public void Image(Stream stream, bool highDensity = true)
+      {
+         using (var image = System.Drawing.Image.FromStream(stream)) Write(_command.Image.Print(image, highDensity));
+      }
+
+      public void Image(byte[] bytes, bool highDensity = true)
+      {
+         using (var ms = new MemoryStream(bytes))
+            Write(_command.Image.Print(System.Drawing.Image.FromStream(ms), highDensity));
+      }
+
+      public void Image(Image image, bool highDensity = true)
+      {
+         Write(_command.Image.Print(image, highDensity));
+      }
+
+      #endregion
+
+      #region BarCode
+
+      public void Code128(string code)
+      {
+         Write(_command.BarCode.Code128(code));
+      }
+
+      public void Code39(string code)
+      {
+         Write(_command.BarCode.Code39(code));
+      }
+
+      public void Ean13(string code)
+      {
+         Write(_command.BarCode.Ean13(code));
+      }
+
+      #endregion
+
+      #region InitializePrint
+
+      public void InitializePrint()
+      {
+         RawPrinterHelper.SendBytesToPrinter(_printerName, _command.InitializePrint.Initialize());
+      }
+
+      #endregion
+
+      #endregion
+   }
 }

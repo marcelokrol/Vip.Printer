@@ -2,7 +2,7 @@
 {
     internal interface IPrintCommand
     {
-        int ColsNomal { get; }
+        int ColsNormal { get; }
         int ColsCondensed { get; }
         int ColsExpanded { get; }
         IFontMode FontMode { get; set; }

@@ -17,7 +17,7 @@ namespace Vip.Printer.EscDarumaCommands
         public IImage Image { get; set; }
         public IBarCode BarCode { get; set; }
         public IInitializePrint InitializePrint { get; set; }
-        public int ColsNomal => 48;
+        public int ColsNormal => 48;
         public int ColsCondensed => 57;
         public int ColsExpanded => 25;
 

@@ -4,6 +4,7 @@
     {
         Epson = 0,
         Bematech = 1,
-        Daruma = 2
+        Daruma = 2,
+        Elgin = 3
     }
 }
