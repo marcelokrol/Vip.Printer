@@ -44,13 +44,18 @@ namespace Vip.Printer.EscPosCommands
 
         public byte[] Separator()
         {
-            return FontMode.Condensed(PrinterModeState.On)
-                .AddBytes(new string('-', ColsCondensed))
-                .AddBytes(FontMode.Condensed(PrinterModeState.Off))
-                .AddLF();
+            //return FontMode.Condensed(PrinterModeState.On)
+            //    .AddBytes(new string('-', ColsCondensed))
+            //    .AddBytes(FontMode.Condensed(PrinterModeState.Off))
+            //    .AddLF();
+
+            return FontWidth.Normal()
+               .AddBytes(new string('-', ColsNormal))
+               .AddLF();
+
         }
 
-        public byte[] AutoTest()
+      public byte[] AutoTest()
         {
             return new byte[] {29, 40, 65, 2, 0, 0, 2};
         }
