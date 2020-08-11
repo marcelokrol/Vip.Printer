@@ -6,157 +6,164 @@ using Vip.Printer.Enums;
 
 namespace Vip.Printer.Demo
 {
-    public partial class frmPrincipal : Form
-    {
-        #region Construtores
+   public partial class frmPrincipal : Form
+   {
+      #region Construtores
 
-        public frmPrincipal()
-        {
-            InitializeComponent();
-        }
+      public frmPrincipal()
+      {
+         InitializeComponent();
+      }
 
-        #endregion
+      #endregion
 
-        #region Eventos
+      #region Eventos
 
-        private void frmPrincipal_Load(object sender, EventArgs e)
-        {
-            cboModelo.SelectedItem = cboModelo.Items[0];
-        }
+      private void frmPrincipal_Load(object sender, EventArgs e)
+      {
+         cboModelo.SelectedItem = cboModelo.Items[0];
+      }
 
-        private void lblLinkGit_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://www.github.com/leandrovip");
-        }
+      private void lblLinkGit_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+      {
+         Process.Start("https://www.github.com/leandrovip");
+      }
 
-        private void btnTexto_Click(object sender, EventArgs e)
-        {
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
+      private void btnTexto_Click(object sender, EventArgs e)
+      {
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
 
-            printer.TestPrinter();
-            printer.PartialPaperCut();
-            printer.PrintDocument();
-        }
+         printer.TestPrinter();
+         printer.PartialPaperCut();
+         printer.PrintDocument();
+      }
 
-        private void btnImagem_Click(object sender, EventArgs e)
-        {
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), "images");
+      private void btnImagem_Click(object sender, EventArgs e)
+      {
+         var directory = Path.Combine(Directory.GetCurrentDirectory(), "images");
 
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
-            printer.AlignCenter();
-            printer.WriteLine("Impressão de imagem");
-            printer.Separator();
-            printer.AlignLeft();
-            printer.NewLine();
-            printer.WriteLine("Imagem alinhada a esquerda");
-            printer.Image(Path.Combine(directory, "logo-vip.bmp"));
-            printer.NewLine();
-            printer.AlignCenter();
-            printer.WriteLine("Imagem alinhada ao centro");
-            printer.Image(Path.Combine(directory, "logo-vip.bmp"));
-            printer.NewLine();
-            printer.AlignRight();
-            printer.WriteLine("Imagem alinhada a direita");
-            printer.Image(Path.Combine(directory, "logo-vip2.bmp"));
-            printer.NewLine();
-            printer.AlignLeft();
-            printer.WriteLine("Fim de teste");
-            printer.NewLines(3);
-            printer.PartialPaperCut();
-            printer.PrintDocument();
-        }
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
+         printer.AlignCenter();
+         printer.WriteLine("Impressão de imagem");
+         printer.Separator();
+         printer.AlignLeft();
+         printer.NewLine();
+         printer.WriteLine("Imagem alinhada a esquerda");
+         printer.Image(Path.Combine(directory, "logo-vip.bmp"));
+         printer.NewLine();
+         printer.AlignCenter();
+         printer.WriteLine("Imagem alinhada ao centro");
+         printer.Image(Path.Combine(directory, "logo-vip.bmp"));
+         printer.NewLine();
+         printer.AlignRight();
+         printer.WriteLine("Imagem alinhada a direita");
+         printer.Image(Path.Combine(directory, "logo-vip2.bmp"));
+         printer.NewLine();
+         printer.AlignLeft();
+         printer.WriteLine("Fim de teste");
+         printer.NewLines(3);
+         printer.PartialPaperCut();
+         printer.PrintDocument();
+      }
 
-        private void btnGaveta_Click(object sender, EventArgs e)
-        {
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
-            printer.OpenDrawer();
-            printer.PrintDocument();
-        }
+      private void btnGaveta_Click(object sender, EventArgs e)
+      {
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
+         printer.OpenDrawer();
+         printer.PrintDocument();
+      }
 
-        private void btnQrCode_Click(object sender, EventArgs e)
-        {
-            var stringQrCode =
-                "35190361099008000141599000022490004885145710|20190315181929|2479.35||K+VRwUKRomWZZcJhaeuJMIWxRb5QKP6Sh6BLzHZdmNdhPOvxo5Xx4oIYqkfA5sB6z4KzBepBLgDrYkeOCzjwVGWhvLA5C72eQzk9emvV6EIk6iXa9XU/HesRJAqqiSqjvvOvhR9orD0tTUj3DjwoZpn8vrSSK1v1nHxJZBah7r5e3FG8P93X47QgHJZXGRR7BSNA8CQ4N/hgEMqXbOCn/4zj0E6y5Xg/JcI09xC6vX+5SmILY2e1zEBIirxKsWpZN/DkXt/su79esaQFBJSgfCerok4kLK/vE54CMjJ//U5bhLRm/ocHuEJbg1Rvf36kpwIXEnPV/zG/luJita36qQ==";
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
-            printer.AlignCenter();
-            printer.BoldMode("Teste de QRCode");
-            printer.Separator();
-            printer.WriteLine("QrCode 1");
-            printer.QrCode(stringQrCode);
-            printer.NewLine();
-            printer.WriteLine("QrCode 2");
-            printer.QrCode(stringQrCode, QrCodeSize.Size1);
-            printer.NewLine();
-            printer.WriteLine("QrCode 3");
-            printer.QrCode(stringQrCode, QrCodeSize.Size2);
-            printer.NewLine();
-            printer.BoldMode("Fim de Teste");
-            printer.AlignLeft();
-            printer.NewLines(5);
-            printer.PartialPaperCut();
+      private void btnQrCode_Click(object sender, EventArgs e)
+      {
+         var stringQrCode =
+             "35190361099008000141599000022490004885145710|20190315181929|2479.35||K+VRwUKRomWZZcJhaeuJMIWxRb5QKP6Sh6BLzHZdmNdhPOvxo5Xx4oIYqkfA5sB6z4KzBepBLgDrYkeOCzjwVGWhvLA5C72eQzk9emvV6EIk6iXa9XU/HesRJAqqiSqjvvOvhR9orD0tTUj3DjwoZpn8vrSSK1v1nHxJZBah7r5e3FG8P93X47QgHJZXGRR7BSNA8CQ4N/hgEMqXbOCn/4zj0E6y5Xg/JcI09xC6vX+5SmILY2e1zEBIirxKsWpZN/DkXt/su79esaQFBJSgfCerok4kLK/vE54CMjJ//U5bhLRm/ocHuEJbg1Rvf36kpwIXEnPV/zG/luJita36qQ==";
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
+         printer.AlignCenter();
+         printer.BoldMode("Teste de QRCode");
+         printer.Separator();
+         printer.WriteLine("QrCode 1");
+         printer.QrCode(stringQrCode);
+         printer.NewLine();
+         printer.WriteLine("QrCode 2");
+         printer.QrCode(stringQrCode, QrCodeSize.Size1);
+         printer.NewLine();
+         printer.WriteLine("QrCode 3");
+         printer.QrCode(stringQrCode, QrCodeSize.Size2);
+         printer.NewLine();
+         printer.BoldMode("Fim de Teste");
+         printer.AlignLeft();
+         printer.NewLines(5);
+         printer.PartialPaperCut();
 
-            printer.PrintDocument();
-        }
+         printer.PrintDocument();
+      }
 
-        private void btnCodigoDeBarras_Click(object sender, EventArgs e)
-        {
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
-            printer.WriteLine("Teste de Código de Barras");
-            printer.Separator();
-            printer.WriteLine("Code 128");
-            printer.Code128("3519036109900800014159");
-            printer.WriteLine("Code  39");
-            printer.Code39("TESTE");
-            printer.WriteLine("Fim de Teste");
-            printer.NewLines(5);
-            printer.PartialPaperCut();
+      private void btnCodigoDeBarras_Click(object sender, EventArgs e)
+      {
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
+         printer.WriteLine("Teste de Código de Barras");
+         printer.Separator();
+         printer.WriteLine("Code 128");
+         printer.Code128("3519036109900800014159");
+         printer.WriteLine("Code  39");
+         printer.Code39("TESTE");
+         printer.WriteLine("Fim de Teste");
+         printer.NewLines(5);
+         printer.PartialPaperCut();
 
-            printer.PrintDocument();
-        }
+         printer.PrintDocument();
+      }
 
-        private void btnCodigoEan13_Click(object sender, EventArgs e)
-        {
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
+      private void btnCodigoEan13_Click(object sender, EventArgs e)
+      {
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
 
-            printer.WriteLine("EAN 13");
-            printer.Ean13("7898173500051");
-            printer.NewLine();
-            printer.WriteLine("Fim de Teste");
-            printer.NewLines(5);
-            printer.PartialPaperCut();
+         printer.WriteLine("EAN 13");
+         printer.Ean13("7898173500051");
+         printer.NewLine();
+         printer.WriteLine("Fim de Teste");
+         printer.NewLines(5);
+         printer.PartialPaperCut();
 
-            printer.PrintDocument();
-        }
+         printer.PrintDocument();
+      }
 
-        private void btnInicializar_Click(object sender, EventArgs e)
-        {
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
-            printer.InitializePrint();
+      private void btnInicializar_Click(object sender, EventArgs e)
+      {
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
+         printer.InitializePrint();
 
-            MessageBox.Show("Comando inicialize executado com sucesso!", "Vip.Printer");
-        }
+         MessageBox.Show("Comando inicialize executado com sucesso!", "Vip.Printer");
+      }
 
-        private void btnAutoTeste_Click(object sender, EventArgs e)
-        {
-            var printer = new Printer(txtImpressora.Text, ObterTipo());
-            printer.AutoTest();
-            printer.PrintDocument();
-        }
+      private void btnAutoTeste_Click(object sender, EventArgs e)
+      {
+         var printer = new Printer(txtImpressora.Text, ObterTipo());
+         //printer.AutoTest();
 
-        private void btnSair_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+         printer.WriteLine("Valor»R$199,95");
 
-        #endregion
+         printer.Write(new byte[] { 27, 69 });
 
-        #region Métodos
+         printer.WriteLine("Valor»R$199,95");
 
-        private PrinterType ObterTipo()
-        {
-            return cboModelo.Text == "Bematech" ? PrinterType.Bematech : cboModelo.Text == "Daruma" ? PrinterType.Daruma : PrinterType.Epson;
-        }
+         printer.PrintDocument();
+      }
 
-        #endregion
-    }
+      private void btnSair_Click(object sender, EventArgs e)
+      {
+         Application.Exit();
+      }
+
+      #endregion
+
+      #region Métodos
+
+      private PrinterType ObterTipo()
+      {
+         return (PrinterType)Convert.ToInt32(cboModelo.Text.Substring(0, 1));
+      }
+
+      #endregion
+   }
 }

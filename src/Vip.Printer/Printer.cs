@@ -53,7 +53,8 @@ namespace Vip.Printer
       private readonly PrinterType _printerType;
       private readonly Encoding _encoding;
 
-      public string TextPrinted { get; private set; }
+      public string TextPrinted { get;  set; }
+      public PrinterType PrinterType => _printerType;
 
       #endregion
 
@@ -266,6 +267,7 @@ namespace Vip.Printer
       public void TestPrinter()
       {
          AlignLeft();
+         WriteLine("                  MK SOFTWARES");
          WriteLine("TESTE DE IMPRESSÃO NORMAL - 48 COLUNAS");
          WriteLine("....+....1....+....2....+....3....+....4....+...");
          Separator();

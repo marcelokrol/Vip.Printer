@@ -7,6 +7,7 @@
 		<Authors>Leandro Ferreira</Authors>
 		<Version>1.0.19</Version>
 		<Tags>vip printer</Tags>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 	  <PackageReference Include="System.Drawing.Common">

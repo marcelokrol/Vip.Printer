@@ -9,6 +9,9 @@ namespace Vip.Printer.Interfaces.Printer
         int ColsNormal { get; }
         int ColsCondensed { get; }
         int ColsExpanded { get; }
+        string TextPrinted { get;  set; }
+      PrinterType PrinterType { get; }
+
         void PrintDocument();
         void Write(string value);
         void Write(byte[] value);
