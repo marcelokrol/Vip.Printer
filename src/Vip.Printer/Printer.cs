@@ -53,6 +53,8 @@ namespace Vip.Printer
       private readonly PrinterType _printerType;
       private readonly Encoding _encoding;
 
+      public string TextPrinted { get; private set; }
+
       #endregion
 
       #region Constructors
@@ -71,6 +73,7 @@ namespace Vip.Printer
          _printerName = string.IsNullOrEmpty(printerName) ? "temp.prn" : printerName.Trim();
          _printerType = type;
          _encoding = encoding;
+         TextPrinted = string.Empty;
 
          #region Select printer type
 
@@ -192,6 +195,8 @@ namespace Vip.Printer
                value = a.Substring(0, l) + " " + b;
          }
 
+         TextPrinted += value;
+
          var list = new List<byte>();
          if (_buffer != null) list.AddRange(_buffer);
 
@@ -219,6 +224,7 @@ namespace Vip.Printer
       public void Clear()
       {
          _buffer = null;
+         TextPrinted = string.Empty;
       }
 
       #region Obsolete Methods
